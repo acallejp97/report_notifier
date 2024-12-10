@@ -10,7 +10,7 @@ class ParkingRetriever(AbstractRetriever):
     def __init__(self, id_number: str, has_changes: bool = False):
         self.has_changes = has_changes
         self.id_number = id_number
-        self.save_service = SaveService("parking_config/position.txt")
+        self.save_service = SaveService("parking_position.txt")
 
     def process(self):
         user_list = self.get_parking_list()
