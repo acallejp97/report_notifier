@@ -1,5 +1,6 @@
 import requests
 from datetime import date
+from datetime import datetime
 from retrievers.abstract_retriever import AbstractRetriever
 from notification_service import NotificationService
 from constants import ESTER_URL
@@ -7,7 +8,7 @@ from constants import ESTER_URL
 
 class EsterRetriever(AbstractRetriever):
     def __init__(self, default_date: str) -> None:
-        self.date = self.yesterday(default_date)
+        self.date = self.yesterdays_value(default_date)
 
     def process(self):
         value = self.get_ester_value()
@@ -21,10 +22,10 @@ class EsterRetriever(AbstractRetriever):
                 return response
 
     def create_response(self, value: dict):
-        NotificationService().send_message(
-            "Indice €STER",
-            f"El valor del €STER para el dia {self.original_date(self.date)} es {value['OBS']}. En comparación con el dia anterior ha tenido una tendencia {value['TREND_INDICATOR']}",
-        )
+        message = f"El valor del €STER para el dia {self.original_date(self.date)} es {value['OBS']}. En comparación con el dia anterior ha tenido una tendencia {value['TREND_INDICATOR']}."
+        if datetime.now().hour < 4:
+            message = message + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. Se ha tomado el valor del dia anterior.",
+        NotificationService().send_message("Indice €STER", message)
 
     @staticmethod
     def clear_json(json: list):
@@ -39,13 +40,15 @@ class EsterRetriever(AbstractRetriever):
         return json
 
     @staticmethod
-    def yesterday(selected_date: str):
+    def yesterdays_value(selected_date: str):
         today = date.today() if selected_date is None else date.fromisoformat(selected_date)
-        yesterday = today.replace(day=today.day - 1)
-        return yesterday.strftime("%Y-%m-%d")
+        remove_day = 1 if datetime.now().hour > 4 else 2
+        yesterdays_value = today.replace(day=today.day - remove_day)
+        return yesterdays_value.strftime("%Y-%m-%d")
 
     @staticmethod
     def original_date(date_string: str):
         date_object = date.fromisoformat(date_string)
-        day_plus_one = date_object.replace(day=date_object.day + 1)
+        add_day = 1 if datetime.now().hour > 4 else 2
+        day_plus_one = date_object.replace(day=date_object.day + add_day)
         return day_plus_one.strftime("%Y-%m-%d")
