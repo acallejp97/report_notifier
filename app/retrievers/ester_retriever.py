@@ -8,6 +8,7 @@ from constants import ESTER_URL
 
 class EsterRetriever(AbstractRetriever):
     def __init__(self, default_date: str) -> None:
+        super().__init__()
         self.date = self.yesterdays_value(default_date)
 
     def process(self):
@@ -24,8 +25,8 @@ class EsterRetriever(AbstractRetriever):
     def create_response(self, value: dict):
         message = f"El valor del €STER para el dia {self.original_date(self.date)} es {value['OBS']}. En comparación con el dia anterior ha tenido una tendencia {value['TREND_INDICATOR']}."
         if datetime.now().hour < 4:
-            message = message + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. Se ha tomado el valor del dia anterior.",
-        NotificationService().send_message("Indice €STER", message)
+            message = message + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. Se ha tomado el valor del dia anterior."
+        self.notification_service.send_message("Indice €STER", message)
 
     @staticmethod
     def clear_json(json: list):

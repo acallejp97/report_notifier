@@ -8,6 +8,7 @@ from save_file_service import SaveService
 
 class ParkingRetriever(AbstractRetriever):
     def __init__(self, id_number: str, has_changes: bool = False):
+        super().__init__()
         self.has_changes = has_changes
         self.id_number = id_number
         self.save_service = SaveService("parking_position.txt")
@@ -29,7 +30,7 @@ class ParkingRetriever(AbstractRetriever):
         return hidden_id[:-1] + "*"
 
     def create_response(self, value):
-        NotificationService().send_message("Lista Parking Rekalde", f"Estás el numero {value} en la lista")
+        self.notification_service.send_message("Lista Parking Rekalde", f"Estás el numero {value} en la lista")
 
     @staticmethod
     def get_parking_list():
