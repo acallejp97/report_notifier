@@ -1,0 +1,14 @@
+services:
+  report_notifier:
+    container_name: report_notifier
+    image: ghcr.io/acallejp97/report_notifier:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - ID_NUMBER=
+      - CRON_PARKING=
+      - CRON_ESTER=
+      - NOTIFICATION_URL=tgram://<BOT_TOKEN>/<CHAT_ID>
+      - TZ=Europe/Madrid
+    restart: unless-stopped
