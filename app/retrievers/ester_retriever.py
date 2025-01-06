@@ -12,21 +12,24 @@ class EsterRetriever(AbstractRetriever):
         self.date = self.yesterdays_value(default_date)
 
     def process(self):
-        value = self.get_ester_value()
-        self.create_response(value)
+        value, found = self.get_ester_value()
+        self.create_response(value, found)
 
     def get_ester_value(self):
         response = requests.get(ESTER_URL).json()
         clean_json = self.clear_json(response)
         for response in clean_json:
             if response["PERIOD"].split("T")[0] == self.date:
-                return response
-        return response
+                return [response, True]
+        return [response, False]
 
-    def create_response(self, value: dict):
-        message = f"El valor del €STER para el dia {self.original_date(self.date)} es {value['OBS']}. En comparación con el dia anterior ha tenido una tendencia {value['TREND_INDICATOR']}."
-        if datetime.now().hour < 4:
-            message = message + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. Se ha tomado el valor del dia anterior."
+    def create_response(self, value: dict, found: bool):
+        if not found:
+            message = f"El ultimo valor del €STER registrado es {value['OBS']} para el dia {value['PERIOD']}. Su tendencia para dicho dia era {value['TREND_INDICATOR']}"
+        else:
+            message = f"El valor del €STER para el dia {self.original_date(self.date)} es {value['OBS']}. En comparación con el dia anterior ha tenido una tendencia {value['TREND_INDICATOR']}."
+            if datetime.now().hour < 4:
+                message = message + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. Se ha tomado el valor del dia anterior."
         self.notification_service.send_message("Indice €STER", message)
 
     @staticmethod
