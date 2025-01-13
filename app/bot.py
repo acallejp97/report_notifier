@@ -23,7 +23,7 @@ async def ester(update, context):
 
 async def webpage(update, context):
     args = context.args
-    webpage_command = ["python", "main.py", "webpage"]
+    webpage_command = ["python", "main.py", "webpage", "send_notification"]
     # webpage_command.append(args[0]) if args else webpage_command
     subprocess.run(webpage_command)
 

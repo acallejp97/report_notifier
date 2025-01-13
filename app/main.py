@@ -23,7 +23,7 @@ def get_service(args) -> AbstractRetriever:
         return EsterRetriever(default_date=date)
 
     if str(args[1]).lower() == "webpage":
-        return WebpageRetriever()
+        return WebpageRetriever(len(args) == 3)
 
 
 if __name__ == "__main__":
