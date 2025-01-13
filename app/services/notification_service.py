@@ -1,5 +1,6 @@
-from apprise import Apprise
 import os
+
+from apprise import Apprise
 
 
 class NotificationService:

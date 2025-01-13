@@ -1,17 +1,14 @@
-from notification_service import NotificationService
-from retrievers.abstract_retriever import AbstractRetriever
 import requests
 from bs4 import BeautifulSoup
 from constants import BILBAO_PARKING_URL
-from save_file_service import SaveService
+from retrievers.abstract_retriever import AbstractRetriever
 
 
 class ParkingRetriever(AbstractRetriever):
     def __init__(self, id_number: str, has_changes: bool = False):
-        super().__init__()
+        super().__init__("parking_position.txt")
         self.has_changes = has_changes
         self.id_number = id_number
-        self.save_service = SaveService("parking_position.txt")
 
     def process(self):
         user_list = self.get_parking_list()

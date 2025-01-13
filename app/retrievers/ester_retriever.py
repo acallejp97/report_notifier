@@ -1,9 +1,9 @@
-import requests
 from datetime import date
 from datetime import datetime
-from retrievers.abstract_retriever import AbstractRetriever
-from notification_service import NotificationService
+
+import requests
 from constants import ESTER_URL
+from retrievers.abstract_retriever import AbstractRetriever
 
 
 class EsterRetriever(AbstractRetriever):
@@ -13,7 +13,7 @@ class EsterRetriever(AbstractRetriever):
 
     def process(self):
         value, found = self.get_ester_value()
-        self.create_response(value, found)
+        self.create_response([value, found])
 
     def get_ester_value(self):
         response = requests.get(ESTER_URL).json()
@@ -23,13 +23,17 @@ class EsterRetriever(AbstractRetriever):
                 return [response, True]
         return [response, False]
 
-    def create_response(self, value: dict, found: bool):
+    def create_response(self, value):
+        value, found = value
         if not found:
             message = f"El ultimo valor del €STER registrado es {value['OBS']} para el dia {value['PERIOD']}. Su tendencia para dicho dia era {value['TREND_INDICATOR']}"
         else:
             message = f"El valor del €STER para el dia {self.original_date(self.date)} es {value['OBS']}. En comparación con el dia anterior ha tenido una tendencia {value['TREND_INDICATOR']}."
             if datetime.now().hour < 4:
-                message = message + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. Se ha tomado el valor del dia anterior."
+                message = (
+                    message
+                    + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. Se ha tomado el valor del dia anterior."
+                )
         self.notification_service.send_message("Indice €STER", message)
 
     @staticmethod

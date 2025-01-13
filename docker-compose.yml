@@ -7,8 +7,10 @@ services:
       - /etc/timezone:/etc/timezone:ro
     environment:
       - ID_NUMBER=
+      - WEBPAGE_URLS=
       - CRON_PARKING=
       - CRON_ESTER=
+      - CRON_WEBPAGE=
       - NOTIFICATION_URL=tgram://<BOT_TOKEN>/<CHAT_ID>
       - TZ=Europe/Madrid
     restart: unless-stopped

@@ -1,7 +1,7 @@
 import subprocess
+
 from telegram.ext import CommandHandler
 from telegram.ext._application import Application
-
 from utils import get_bot_token
 
 
@@ -21,6 +21,13 @@ async def ester(update, context):
     subprocess.run(ester_command)
 
 
+async def webpage(update, context):
+    args = context.args
+    webpage_command = ["python", "main.py", "webpage"]
+    # webpage_command.append(args[0]) if args else webpage_command
+    subprocess.run(webpage_command)
+
+
 async def start(update, context):
     await update.message.reply_text("Bot iniciado correctamente")
 
@@ -31,6 +38,7 @@ def main():
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("parking", parking, has_args=False))
     application.add_handler(CommandHandler("ester", ester, has_args=False))
+    application.add_handler(CommandHandler("webpage", webpage, has_args=False))
     print("Listening...")
     application.run_polling(1.0)
 
