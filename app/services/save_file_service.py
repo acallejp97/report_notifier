@@ -15,6 +15,8 @@ class SaveService:
 
     def read(self):
         self._check_filename()
+        if not os.path.exists(self.filename):
+            return None
         with open(self.filename, "r") as f:
             return f.read()
 
@@ -30,4 +32,3 @@ class SaveService:
             raise ValueError(
                 "File name is not set. Please define it calling update_filename method or when SaveService is instantiated"
             )
-        os.makedirs(os.path.dirname(self.filename), exist_ok=True)

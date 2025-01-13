@@ -1,12 +1,10 @@
-import hashlib
 import os
 from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
 from retrievers.abstract_retriever import AbstractRetriever
-
-
+from utils import compute_hash
 
 
 class WebpageRetriever(AbstractRetriever):
@@ -22,11 +20,12 @@ class WebpageRetriever(AbstractRetriever):
             title = ""
             try:
                 content = self._fetch_webpage(url)
-                title = self._get_webpage_title(content)
-                self.save_service.update_filename(f"{title}.txt")
+                title = self._get_title(content)
+                hash_title = compute_hash(title)
+                self.save_service.update_filename(f"{hash_title}.txt")
                 soup = BeautifulSoup(content, "html.parser")
                 body_content = soup.body.get_text() if soup.body else ""
-                new_hash = self._compute_hash(body_content)
+                new_hash = compute_hash(body_content)
                 previous_hash = self.save_service.read()
                 if previous_hash is None:
                     message = f"No previous hash found for {url}. Storing the current hash."
@@ -44,23 +43,23 @@ class WebpageRetriever(AbstractRetriever):
     def create_response(self, value):
         title, message = value
         if (
-            "M.O.D.A" in title
-            and "not" in message
-            and datetime.today().weekday() == 0
-            and datetime.today().hour == 10
-            and datetime.today().minute == 20
-        ) or self.force_notification:
+            (
+                "M.O.D.A" in title
+                and "not" in message
+                and datetime.today().weekday() == 0
+                and datetime.today().hour == 10
+                and datetime.today().minute == 20
+            )
+            or self.force_notification
+            or ("M.O.D.A" in title and "not" not in message)
+        ):
             self.notification_service.send_message(title, message)
 
     @staticmethod
-    def _get_webpage_title(content):
+    def _get_title(content):
         soup = BeautifulSoup(content, "html.parser")
         title_tag = soup.title
         return title_tag.string if title_tag else "No Title"
-
-    @staticmethod
-    def _compute_hash(content):
-        return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
     @staticmethod
     def _fetch_webpage(url):
