@@ -25,7 +25,7 @@ class SaveService:
         os.remove(self.filename)
 
     def update_filename(self, new_filename: str):
-        self.filename = os.path.join('/usr/share/app', HASH_DIR, new_filename)
+        self.filename = os.path.join('/usr/src/app', HASH_DIR, new_filename)
 
     def _check_filename(self):
         if self.filename == "mock_file":
