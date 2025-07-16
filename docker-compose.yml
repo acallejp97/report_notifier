@@ -4,8 +4,6 @@ services:
     image: ghcr.io/acallejp97/report_notifier:latest
     volumes:
       - ./saves:/usr/src/app/saves
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
     environment:
       - ID_NUMBER=
       - WEBPAGE_URLS=
