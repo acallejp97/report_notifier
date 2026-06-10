@@ -13,7 +13,7 @@ class WebpageRetriever(AbstractRetriever):
         self.force_notification = send_notification
 
     def process(self):
-        urls = os.environ["WEBPAGE_URLS"].split(",")
+        urls = os.environ.get("WEBPAGE_URLS", "").split(",")
         for url in urls:
             url = url.strip()
             message = ""
@@ -42,18 +42,7 @@ class WebpageRetriever(AbstractRetriever):
 
     def create_response(self, value):
         title, message = value
-        if (
-            (
-                "M.O.D.A" in title
-                and "not" in message
-                and datetime.today().weekday() == 0
-                and datetime.today().hour == 10
-                and datetime.today().minute == 20
-            )
-            or self.force_notification
-            or ("M.O.D.A" in title and "not" not in message)
-        ):
-            self.notification_service.send_message(title, message)
+        self.notification_service.send_message(title, message)
 
     @staticmethod
     def _get_title(content):
