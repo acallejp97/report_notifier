@@ -30,5 +30,6 @@ class SaveService:
     def _check_filename(self):
         if self.filename == "mock_file":
             raise ValueError(
-                "File name is not set. Please define it calling update_filename method or when SaveService is instantiated"
+                "File name is not set. "
+                "Please define it calling update_filename method or when SaveService is instantiated"
             )

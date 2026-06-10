@@ -6,7 +6,7 @@ from utils import get_bot_token
 
 
 async def parking(update, context):
-    args = context.args
+    _ = context.args
     await update.message.reply_text("Buscando posicion en la lista del parking")
     parking_command = ["python", "main.py", "parking"]
     # parking_command.append(args[0]) if args else parking_command
@@ -14,7 +14,7 @@ async def parking(update, context):
 
 
 async def ester(update, context):
-    args = context.args
+    _ = context.args
     ester_command = ["python", "main.py", "ester"]
     await update.message.reply_text("Extrayendo indice €STER")
     # ester_command.append(args[0]) if args else ester_command
@@ -22,7 +22,7 @@ async def ester(update, context):
 
 
 async def webpage(update, context):
-    args = context.args
+    _ = context.args
     webpage_command = ["python", "main.py", "webpage", "send_notification"]
     # webpage_command.append(args[0]) if args else webpage_command
     subprocess.run(webpage_command)

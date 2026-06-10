@@ -26,13 +26,16 @@ class EsterRetriever(AbstractRetriever):
     def create_response(self, value):
         value, found = value
         if not found:
-            message = f"El ultimo valor del €STER registrado es {value['OBS']} para el dia {value['PERIOD']}. Su tendencia para dicho dia era {value['TREND_INDICATOR']}"
+            message = (f"El ultimo valor del €STER registrado es {value['OBS']} para el dia {value['PERIOD']}. "
+                       f"Su tendencia para dicho dia era {value['TREND_INDICATOR']}")
         else:
-            message = f"El valor del €STER para el dia {self.original_date(self.date)} es {value['OBS']}. En comparación con el dia anterior ha tenido una tendencia {value['TREND_INDICATOR']}."
+            message = (f"El valor del €STER para el dia {self.original_date(self.date)} es {value['OBS']}. "
+                       f"En comparación con el dia anterior ha tenido una tendencia {value['TREND_INDICATOR']}.")
             if datetime.now().hour < 4:
                 message = (
                     message
-                    + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. Se ha tomado el valor del dia anterior."
+                    + "\nEl valor del €STER se actualiza diariamente a las 4:00 AM. "
+                      "Se ha tomado el valor del dia anterior."
                 )
         self.notification_service.send_message("Indice €STER", message)
 

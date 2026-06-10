@@ -44,8 +44,8 @@ jobs:
           pip install -r tests/requirements.txt
       - name: Run tests with coverage
         run: |
-          pytest --cov=. --cov-fail-under=80
-        working-directory: app
+          # Run pytest from repository root and measure coverage for the `app` package
+          pytest --cov=app --cov-fail-under=80 app tests
 
   build:
     runs-on: ubuntu-latest
