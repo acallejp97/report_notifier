@@ -6,6 +6,7 @@ from retrievers.ester_retriever import EsterRetriever
 from retrievers.parking_retriever import ParkingRetriever
 from retrievers.webpage_retriever import WebpageRetriever
 
+
 def main():
     args = sys.argv
     service = get_service(args)
